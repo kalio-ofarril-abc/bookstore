@@ -2,6 +2,7 @@ package com.bookstore.bookstore.util;
 
 import com.bookstore.bookstore.entities.Book;
 
+//Book Response class to match the desired format and variables of the get request
 public class BookResponse {
 
 	private String title;

@@ -1,5 +1,6 @@
 package com.bookstore.bookstore.util;
 
+//Even Book Response class to match the desired format and variables of the get request
 public class EvenBookResponse {
 	
 	private String title;

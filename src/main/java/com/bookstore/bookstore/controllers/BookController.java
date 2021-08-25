@@ -28,6 +28,7 @@ public class BookController {
 	}
 	
 	
+	//Returns a list of BooksResponse which Id is present in both the Book table and the Stock table 
 	@GetMapping( 
 			path = "getBooks",
 			produces = "application/json"
@@ -37,6 +38,8 @@ public class BookController {
 	}
 	
 	
+	//Returns a list of EvenBookResponse whose sum of vowels is a pair number, independent of its existence in the Stock table, 
+	//ordered by the the publication year in ascending order 
 	@GetMapping(
 			path = "getEvenBooks",
 			produces = "application/json"
@@ -46,6 +49,7 @@ public class BookController {
 	}
 
 	
+	//Adds a list of Book to the Book table, checks if the book name is already stored in the Book table before storing.
 	@PostMapping( path = "addBooks")
 	public String addBook(@RequestBody List<Book> books) {
 		return bookService.addBook(books);

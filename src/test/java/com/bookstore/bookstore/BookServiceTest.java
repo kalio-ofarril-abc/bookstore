@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import com.bookstore.bookstore.entities.Book;
+import com.bookstore.bookstore.exceptions.BookException;
 import com.bookstore.bookstore.repositories.BookRepository;
 import com.bookstore.bookstore.repositories.StockRepository;
 import com.bookstore.bookstore.services.BookService;
@@ -109,6 +110,21 @@ class BookServiceTest {
 		
 		//Then
 		assertThat(booksShown.toString()).isEqualTo(expectedBooks.toString());
+	}
+	
+	
+	@Test
+	void testExistentTitleExceptionMessage() {
+		
+		//Given
+		List<Book> bookListTest = Arrays.asList(new Book[] {new Book("TestId10","TestTitle1","TestAuthor1","TestPublisher1",2001)});
+		String expectedExceptionMessage = "BookException [errorCode 701, Book Title \"TestTitle1\" is already associated to other ID.]";
+		
+		//When
+		String actualExceptionMessage =  underTest.addBook(bookListTest);
+		
+		//Then
+		assertTrue(actualExceptionMessage.contains(expectedExceptionMessage));
 	}
 
 }

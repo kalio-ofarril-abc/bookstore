@@ -33,13 +33,20 @@ public class BookService{
 	
 	
 	public List<BookResponse> getAllBooks(){	
+		//Retrieve all the Book data from the Book table
 		List<Book> allBooks = bookRepository.findAll();
+		
+		//Create a list of the Book Ids
 		List<String> allBookIds = allBooks.stream()
 				.map(book -> book.getId())
 				.collect(Collectors.toList());
+		
+		//Filter for the Ids that are present in the Stock table 
 		Set<String> availableBooks = new HashSet<>(stockRepository.findByIdIn(allBookIds).stream()
 				.map(stock -> stock.getId())
 				.collect(Collectors.toList()));
+		
+		//Return books whose Id passed the filtering
 		return allBooks.stream()
 				.filter(book -> availableBooks.contains(book.getId()))
 				.map(book -> {					
@@ -53,11 +60,15 @@ public class BookService{
 	
 	public String addBook(List<Book> books){
 		try {
+			
+			//Check whether the title of any of the posted books is already stored in the Book table
 			for(Book book : books){
 				if(bookRepository.findByTitle(book.getTitle()) != null) {
 					throw new BookException(701,"Book Title \"" + book.getTitle() +"\" is already associated to other ID.");
 				}
 			}
+			
+			//If no BookExcpetion is thrown, save all the books
 			bookRepository.saveAll(books);
 			return "Books added succesfully.";
 		}catch(BookException e){
@@ -72,15 +83,23 @@ public class BookService{
 					EvenBookResponse map = new EvenBookResponse();
 					map.setTitle(book.getTitle());
 					map.setPublicationYear(book.getYear());
+					
+					//Create a char stream of the characters in the Book title
 					map.setVowelsSum((int) book.getTitle().toLowerCase().chars().mapToObj(c -> (char) c)
+							
+									//Filter for vowels
 									.filter(c -> {
 										Set<Character> set = new HashSet<>(Arrays.asList('a','e','i','o','u'));
 										return set.contains(c);
 									})
+									
+									//Count number of elements remaining in the stream and set the number to the EvenBookMap
 									.count()
 							);
 					return map;
 				})
+				
+				//Keep books whose title vowels sum is a pair number
 				.filter(map -> map.getVowelsSum()%2==0)
 				.collect(Collectors.toList());
 		Collections.sort(evenBooks, (b1,b2) -> b1.getPublicationYear() - b2.getPublicationYear());	
